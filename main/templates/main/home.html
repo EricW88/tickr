@@ -1,0 +1,76 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{% static 'main/css/styles.css' %}">
+</head>
+<body>
+    <div class="landing d-flex justify-content-md-center align-items-center">
+        <div class="fixed-top" id="home-head">
+            <h3 style="text-align:center">Welcome {{request.user}}!</h3>
+            <h3 style="text-align:center">Current Balance: ${{pf.balance}}</h3>
+            <h3 style="text-align:center">Total Assets: ${{pf.assets}}</h3>
+        </div>
+
+        <div class="container fixed-bottom">
+            <form method="POST" class="needs-validation" novalidate>
+                <div class="form-row">
+                    <div class="col-2 input-group mb-3">
+                        <select class="custom-select" name="buy-select" id="buy-select" required>
+                            <option selected value="1">Buy</option>
+                            <option value="2">Sell</option>
+                        </select>                   
+                    </div>
+                    <div class ="col-5 input-group mb-3">
+                        <input type="text" class="form-control" name="abbr" placeholder="stock abbreviaton" required>
+                    </div>  
+                    <div class ="col-3 input-group mb-3">
+                        <input type="number" class="form-control" name="amount" id="stock-amount" placeholder="amount" min=".01" step=".01" required>
+                    </div>
+                    <div class ="col-2 input-group mb-3 justify-content-end">
+                        {% csrf_token %}
+                        <button type="submit" class= "btn btn-submit" name="purchase">Purchase</button>  
+                    </div>          
+                </div>
+            </form>
+            <form method="POST">
+                <div class="form-row">
+                    <div class = "col text-center">
+                        {% csrf_token %}
+                        <button type="submit" class= "btn btn-submit text-center" name="logout">Logout</button>            
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+ 
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

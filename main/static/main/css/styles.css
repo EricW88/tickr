@@ -1,0 +1,40 @@
+.landing{
+    background: #e6eded;
+    height: 100vh;
+}
+
+.login-head{
+    margin-bottom: 25px;
+}
+
+.btn-submit{
+    background-color: #1db954;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-submit:hover{
+    background-color: #278548
+}
+
+#register-link{
+    color: black;
+}
+
+#register-link:hover{
+    color: #278548;
+}
+
+.btn-login{
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+.home-txt{
+    text-align: center;
+}
+
+#home-head{
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
