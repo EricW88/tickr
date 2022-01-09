@@ -38,3 +38,15 @@
     border-bottom-style: solid;
     border-bottom-width: 2px;
 }
+
+.stock-entry{
+    margin-top: 25px;
+    justify-content: space-between;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+}
+
+.price-col{
+    justify-content: center;
+    align-items: center;
+}

@@ -16,6 +16,21 @@
             <h3 style="text-align:center">Total Assets: ${{pf.assets}}</h3>
         </div>
 
+        <div class="container-fluid border">
+            {% for stock_item in pf.stocks.all %}
+            
+            <div class="row justify-content-between">
+                <div class="col-4 stock-col">
+                    {{stock_item.stock.name}}
+                </div>
+                <div class="col-4 d-flex justify-content-end">
+                    <button type="button" class="btn btn-success stock-btn">{{stock_item.value}}</button>
+                </div>
+            </div>
+
+            {% endfor %}
+        </div>
+
         <div class="container fixed-bottom">
             <form method="POST" class="needs-validation" novalidate>
                 <div class="form-row">

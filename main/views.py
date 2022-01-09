@@ -34,7 +34,6 @@ def registerPage(request):
             name = form.cleaned_data["username"]
             new_user = User.objects.get(username=name)
             new_portfolio = Portfolio(user=new_user, balance=10000, assets=0)
-            # print(new_portfolio)
             new_portfolio.save()
             new_user.portfolio.add(new_portfolio)
             return redirect("/login")
@@ -69,7 +68,6 @@ def homePage(request):
     # Calculate balance upon page loading
     pf.assets = 0
     for stock_item in pf.stocks.all():
-        print("HEY")
         ticker = yf.Ticker(stock_item.stock.name)
         ticker_hist = ticker.history(period="1d", interval="1m")
         open_price = ticker_hist['Close'][0]
@@ -78,12 +76,11 @@ def homePage(request):
         stock_item.stock.current_price = cur_price        
         stock_item.value = Decimal(cur_price) * stock_item.quantity
 
-        # print(stock.current_price)
-        # print(stock.quantity)
-
         pf.assets += stock_item.value
         stock_item.save()
         stock_item.stock.save()
+
+    pf.assets = round(pf.assets, 2)
     pf.save()
 
     if request.method == 'POST':
@@ -91,7 +88,6 @@ def homePage(request):
             logout(request)
             return redirect('loginPage')
         elif 'purchase' in request.POST:
-            print(request.POST.get('buy-select'))
             is_bought = request.POST.get('buy-select') == '1'
             name = request.POST.get('abbr').lower()
             amount = float(request.POST.get('amount'))
@@ -110,13 +106,14 @@ def homePage(request):
             open_price = ticker_hist['Close'][0]
             cur_price = ticker_hist.tail(1)['Close'][0]
 
+
             stock = Stock.objects.filter(name=name)
             if not stock.exists():
                 stock = Stock(name=name, open_price=open_price, current_price=cur_price)
             else:
                 stock = stock.get()
 
-            stock_item = Stock.objects.filter(stock=stock, portfolio=pf).get()
+            stock_item = StockItem.objects.filter(stock=stock, portfolio=pf)
 
             quantity = amount / cur_price
             
@@ -129,10 +126,11 @@ def homePage(request):
                 stock_item.value += Decimal(amount)
                 stock_item.quantity += Decimal(quantity)
                 pf.balance -= Decimal(amount)
-
-                print("Item bought!")
             else:
                 if not stock_item.exists() or amount > stock_item.get().value:
+                    print(round(Decimal(amount), 2) > round(stock_item.get().value, 2))
+                    print(amount)
+                    print(stock_item.get().value)
                     print("Can't sell that much")
                     return render(request, "main/home.html", context)
                 else:
@@ -140,20 +138,16 @@ def homePage(request):
                 stock_item.value -= Decimal(amount)
                 stock_item.quantity -= Decimal(quantity)
                 pf.balance += Decimal(amount)
+                print(stock_item.value)
                 if stock_item.value == 0:
                     stock_item.delete()
 
             stock.open_price = open_price
             stock.cur_price = cur_price
-            stock_item.save()
             stock.save()
+            stock_item.save()
             pf.save()
-            print(pf.stocks.all())
 
-            for stock in StockItem.objects.all():
-                print(stock.name)
-
-            print("success!!!")
             return redirect('homePage')
 
     return render(request, "main/home.html", context)
